@@ -1,50 +1,67 @@
 package Week2;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Scanner;
 
-class NewCorona {
-	public String shinchan = "Shinchan";
+class UpdateCorona {
+	public int age = 5;
+}
+
+class NewCorona extends UpdateCorona {
+	public String name = "Shinchan";
+
+	public int getAge() {
+		return this.age;
+	}
 }
 
 class Diseases extends NewCorona {
-	public String name = "infectious";
+	public String diseaseName = "infectious";
 	public boolean infectious = true;
-	String c = "a";
-	boolean s = false;
+	public String c = "a";
+	public boolean s = false;
 
-	public String getShinchan() {
-		return this.shinchan;
+	public String getName() {
+		return this.name;
 	}
 }
 
 class Corona extends Diseases {
-	public String getName() {
-		return this.name;
+	public String getDiseaseName() {
+		return this.diseaseName;
 	}
 
 	public boolean isInfectious() {
-		return infectious;
+		return this.infectious;
 	}
 
-	String getC() {
+	public String getC() {
 		return this.c;
 	}
 
-	boolean isS() {
+	private boolean isS() {
 		return this.s;
 	}
 }
 
-public class ReflectionGetterFinder {
+public class Work {
 
-	public static Method findGetter(Class<?> clazz, String propertyName) {
+	public static Method findGetter(Class<?> clazz, String propertyName)
+			throws NoSuchFieldException, SecurityException {
 		Method getter = null;
 		String capitalizedPropertyName = propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
-		String getterName = (propertyName.startsWith("is") && propertyName.length() > 2) ? propertyName
-				: "get" + capitalizedPropertyName;
+		// propertyName.startsWith("is") && propertyName.length() <2
+		String getterName = "";
+		if (clazz.getField(propertyName).getType() == boolean.class) {
+			getterName = "is" + capitalizedPropertyName;
+		} else {
+			getterName = "get" + capitalizedPropertyName;
+		}
 
 		try {
 			getter = clazz.getDeclaredMethod(getterName);
+			getter.setAccessible(true);
 		} catch (NoSuchMethodException e) {
 			Class<?> superClass = clazz.getSuperclass();
 			if (superClass != null && !superClass.equals(Object.class)) {
@@ -54,27 +71,27 @@ public class ReflectionGetterFinder {
 		return getter;
 	}
 
-	public static void main(String[] args) throws NoSuchFieldException, SecurityException {
-		// Assume we are looking for the getter of the "age" property in the Person
-		// class
-		String propertyName = "shinchan";
+	public static void main(String[] args) throws NoSuchFieldException, SecurityException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException, InstantiationException {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Enter properties like name, age, diseaseName, infectious, c, s --");
+		String propertyName = sc.next();
 
 		try {
 			Class<?> personClass = Class.forName("Week2.Corona");
 			Method getter = findGetter(personClass, propertyName);
 
 			if (getter != null) {
-				System.out.println("Found getter method: " + getter.getName() + " "
-						+ getter.getClass().getDeclaredField(propertyName).getName());
-			} 
-//			else if (propertyName != getter.getClass().getDeclaredField(propertyName).getName()) {
-//
-//			} 
-			else {
+				System.out.println(
+						"Found getter method: " + propertyName + "=" + getter.invoke(personClass.newInstance()));
+				// can also use the System.out.println("Found getter method: " +
+				// getter.invoke(new Corona());
+				// + getter.getClass().getDeclaredField(propertyName).getName());
+			} else {
 				System.out.println("Getter method not found for property: " + propertyName);
 			}
-		} catch (ClassNotFoundException e) {
-			System.out.println("Class not found.");
+		} catch (Exception e) {
+			System.out.println("Not found - " + propertyName + " property");
 		}
 	}
 }
