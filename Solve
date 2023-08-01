@@ -1,83 +1,80 @@
-package exeption;
+package Week2;
 
-import java.awt.Window.Type;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Scanner;
 
-class Rahul {
+class NewCorona {
+	public String shinchan = "Shinchan";
+}
+
+class Diseases extends NewCorona {
 	public String name = "infectious";
 	public boolean infectious = true;
 	String c = "a";
 	boolean s = false;
+
+	public String getShinchan() {
+		return this.shinchan;
+	}
 }
 
-public class Work {
-	public static <D> Object callGetterForProperty(D instance, String propertyName) {
-    	Class<?> currentClass=null;
-    	try {
-    	if(instance!=null) {
-    		currentClass = instance.getClass();    		
-    	}
-    	else {
-			throw new NoSuchFieldException("The supplied property is invalid...");
-		}
-    	if (currentClass == Object.class) {
-    			throw new NoSuchFieldException("The supplied property is invalid...");
-    		}  	      
-        return callGetterRecursively(instance, propertyName, currentClass);
-        } catch (NoSuchFieldException | NoSuchMethodException e) {
-            System.out.println("The supplied property is invalid...");
-            return null;
-        }
-    }
-	 private static <D> Object callGetterRecursively(D instance, String propertyName, Class<?> currentClass) throws NoSuchMethodException {
-	        if (currentClass == null || currentClass == Object.class) {
-	            // Base case: If we have reached Object class, the getter method was not found, throws exception
-	            throw new NoSuchMethodException("The supplied property is invalid...");
-	        }
-	        try {
-	            // Get the getter method for the property
-	            Method getter = currentClass.getDeclaredMethod(getGetterMethodName(propertyName,currentClass));
-	            // If getter method is found, invoke it on the instance to get the property value
-	            if (getter != null) {
-	                return getter.invoke(instance);
-	            }
-	        } catch (Exception e) {
-	            // Handle any exceptions that may occur during reflection
-	            System.out.println("The supplied property is invalid...");
-	            //e.printStackTrace();
-	        }
-	        // Move up to the superclass and continue the search recursively
-	        return callGetterRecursively(instance, propertyName, currentClass.getSuperclass());
-	    }
-	    // Helper method to construct the getter method name from the property name
-	    private static String getGetterMethodName(String propertyName,Class currentClazz)throws NoSuchFieldException {
-	    	
-	        char firstChar = Character.toUpperCase(propertyName.charAt(0));
-	        Field field=currentClazz.getDeclaredField(propertyName);
-	        System.out.println(field);
-	        Class<?> type= field.getType();
-	        System.out.println(type);
-	        if(type.getTypeName().equals("boolean")) {
-	        	if (propertyName.length() == 1) {
-	                return "is" + firstChar + "()";
-	            }
-	        	return "is" + firstChar + propertyName.substring(1) + "() - " + propertyName;
-	        }
-	        if (propertyName.length() == 1) {
-	            return "get" + firstChar + "()";
-	        }
-	        return "get" + firstChar + propertyName.substring(1) + "()";
-	    }
+class Corona extends Diseases {
+	public String getName() {
+		return this.name;
+	}
 
-	public static void main(String[] args) throws NoSuchFieldException{
-		// TODO Auto-generated method stub
-		Scanner scan = new Scanner(System.in);
-		// Disease corona = new Corona();
-		System.out.println("Please enter the property name...:");
-		System.out.println("property names are..:name,infectious,c,s");
-		String p = scan.nextLine();
-		System.out.println(getGetterMethodName(p,Rahul.class));
+	public boolean isInfectious() {
+		return infectious;
+	}
+
+	String getC() {
+		return this.c;
+	}
+
+	boolean isS() {
+		return this.s;
+	}
+}
+
+public class ReflectionGetterFinder {
+
+	public static Method findGetter(Class<?> clazz, String propertyName) {
+		Method getter = null;
+		String capitalizedPropertyName = propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
+		String getterName = (propertyName.startsWith("is") && propertyName.length() > 2) ? propertyName
+				: "get" + capitalizedPropertyName;
+
+		try {
+			getter = clazz.getDeclaredMethod(getterName);
+		} catch (NoSuchMethodException e) {
+			Class<?> superClass = clazz.getSuperclass();
+			if (superClass != null && !superClass.equals(Object.class)) {
+				getter = findGetter(superClass, propertyName);
+			}
+		}
+		return getter;
+	}
+
+	public static void main(String[] args) throws NoSuchFieldException, SecurityException {
+		// Assume we are looking for the getter of the "age" property in the Person
+		// class
+		String propertyName = "shinchan";
+
+		try {
+			Class<?> personClass = Class.forName("Week2.Corona");
+			Method getter = findGetter(personClass, propertyName);
+
+			if (getter != null) {
+				System.out.println("Found getter method: " + getter.getName() + " "
+						+ getter.getClass().getDeclaredField(propertyName).getName());
+			} 
+//			else if (propertyName != getter.getClass().getDeclaredField(propertyName).getName()) {
+//
+//			} 
+			else {
+				System.out.println("Getter method not found for property: " + propertyName);
+			}
+		} catch (ClassNotFoundException e) {
+			System.out.println("Class not found.");
+		}
 	}
 }
