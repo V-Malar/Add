@@ -13,3 +13,68 @@ public class ReflectionExample {
         System.out.println(person);
     }
 }
+
+package exeption;
+
+import static org.junit.Assert.*;
+
+import java.lang.reflect.Method;
+
+import org.junit.Test;
+
+import Week2.Work;
+
+public class WorkTest {
+  
+    @Test
+    public void testFindGetterForExistingProperty() throws NoSuchFieldException, SecurityException, ClassNotFoundException {
+        // Arrange
+        String propertyName = "name";
+        Class<?> personClass = Class.forName("Week2.Corona");
+        // Act
+        Method getter = Work.findGetter(personClass, propertyName);
+        
+        // Assert
+        assertNotNull("Getter method should not be null", getter);
+        assertEquals("Getter method should be getName", "getName", getter.getName());
+        System.out.println("Test-1 passed..");
+    }
+
+    @Test
+    public void testFindGetterForInheritedProperty() throws ClassNotFoundException, NoSuchFieldException, SecurityException {
+        // Arrange
+        String propertyName = "age";
+        Class<?> personClass = Class.forName("Week2.Corona");
+        // Act
+        Method getter = Work.findGetter(personClass, propertyName);
+        
+        // Assert
+        assertNotNull("Getter method should not be null", getter);
+        assertEquals("Getter method should be getAge", "getAge", getter.getName());
+    }
+
+    @Test
+    public void testFindGetterForBooleanProperty() throws ClassNotFoundException, NoSuchFieldException, SecurityException {
+        // Arrange
+        String propertyName = "infectious";
+        Class<?> personClass = Class.forName("Week2.Corona");
+        // Act
+        Method getter = Work.findGetter(personClass, propertyName);
+        
+        // Assert
+        assertNotNull("Getter method should not be null", getter);
+        assertEquals("Getter method should be isInfectious", "isInfectious", getter.getName());
+    }
+
+    @Test
+    public void testFindGetterForNonExistingProperty() throws ClassNotFoundException, NoSuchFieldException, SecurityException {
+        // Arrange
+        String propertyName = "nonExistingProperty";
+        Class<?> personClass = Class.forName("Week2.Corona");
+        // Act
+        Method getter = Work.findGetter(personClass, propertyName);
+        
+        // Assert
+        assertNull("Getter method should be null for non-existing property", getter);
+    }
+}
