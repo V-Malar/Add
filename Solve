@@ -1,3 +1,148 @@
+//package Week;
+//
+//
+//public class Do {
+//	Integer[] a = {23, 0, 45, 66, -1};
+//	Integer temp = a[0];
+//	public void display() {
+//		for (int i = 0; i<a.length - 1; i++)
+//		{
+//			if (a[i] > a[i+1])
+//			{
+//				a[i+1] = a[i];
+//			}
+//		}
+//		for (int i = 0; i<a.length; i++)
+//		{
+//		System.out.println(a[i]);
+//		}
+//	}
+//
+//	public static void main(String[] args) {
+//		// TODO Auto-generated method stub
+//		Do d = new Do();
+//		d.display();
+//	}
+//
+//}
+package Week;
+
+import java.util.Scanner; //This package for reading input 
+
+abstract class Shape {
+	public int height;
+
+	abstract public int calculate(int l);
+
+	public void calculate(int l, int b) {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Enter the Height value: ");
+		height = sc.nextInt();
+		System.out.println(l * b * height);
+	}
+}
+
+class RectangleL extends Shape {
+	Scanner sc = new Scanner(System.in);
+
+	public int calculate(int l) {
+		// TODO Auto-generated method stub
+		System.out.println("Enter the Height value: ");
+		height = sc.nextInt();
+		return l * height;
+	}
+
+//	public int calculate(int l, int b) {
+//		// TODO Auto-generated method stub
+//		System.out.println("Enter the Height value: ");
+//		height = sc.nextInt();
+//		return l * b * height;
+//	}
+
+}
+
+public class Do extends RectangleL {
+	Scanner sc = new Scanner(System.in);
+
+	public Do(String str) {
+		System.out.println(str);
+		System.out.println("\nEnter Length value: ");
+		int l = sc.nextInt();
+		System.out.println("Area of rectangle: " + new RectangleL().calculate(l));
+	}
+
+	public Do() {
+		this("\nSAME LENGTH AND HEIGHT");
+		System.out.println("\nDIFFERENT LENGTH AND WIDTH");
+		System.out.println("\nEnter Length value: ");
+		int l = sc.nextInt();
+		System.out.println("Enter Breadth value: ");
+		int b = sc.nextInt();
+		new RectangleL().calculate(l, b);
+	}
+
+	public static void main(String args[]) {
+		new Do();
+	}
+}
+//import java.util.Scanner;
+//
+//class Shape {
+//	double length, breadth;
+//
+//	Shape(double l, double b) { // Constructor to initialize a Shape object
+//		length = l;
+//		breadth = b;
+//	}
+//
+//	Shape(double len) { // Constructor to initialize another Shape object
+//		length = breadth = len;
+//	}
+//
+//	double calculate() {// To calculate the area of a shape object
+//		return length * breadth;
+//	}
+//}
+//
+//public class Do extends Shape {
+//
+//	// Template code:
+//	double height;
+//
+//	Do(double length, double h) {
+//		// base class constructor with one parameter is called
+//		super(length);
+//		height = h;
+//		System.out.println("Shape class claculate()");
+//		super.calculate();
+//	}
+//
+//	Do(double length, double breadth, double h) {
+//		// base class constructor having two argument is called
+//		super(length, breadth);
+//		height = h;
+//	}
+//
+//	double calculate() {
+//		return length * breadth * height;
+//	}
+//
+//	public static void main(String args[]) {
+//		Scanner sc = new Scanner(System.in);// Create an object to read
+//		// input
+//		double l = sc.nextDouble(); // Read length
+//		double b = sc.nextDouble(); // Read breadth
+//		double h = sc.nextDouble(); // Read height
+//		Do myshape1 = new Do(l, h);
+//		Do myshape2 = new Do(l, b, h);
+//		double volume1;
+//		double volume2;
+//		volume1 = myshape1.calculate();
+//		volume2 = myshape2.calculate();
+//		System.out.println(volume1);
+//		System.out.println(volume2);
+//	}
+//}
 public class ReflectionExample {
     public static void main(String[] args) throws Exception {
         Class<Person> personClass = Person.class;
